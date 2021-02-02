@@ -7,14 +7,15 @@ import org.logicovercode.bsbt.publishing.PublishingSettings
 import org.logicovercode.bsbt.core.ModuleIDSettings
 import sbt.AutoPlugin
 
+/** Created by mogli on 4/23/2017.
+  */
+object BuilderStyleBuild extends AutoPlugin with DockerSettings {
 
-/**
- * Created by mogli on 4/23/2017.
- */
-object BuilderStyleBuild extends AutoPlugin with DockerSettings{
-
-  object autoImport extends PublishingSettings
-    with ModuleIDSettings with ProjectSettings with PluginPaths
+  object autoImport
+      extends PublishingSettings
+      with ModuleIDSettings
+      with ProjectSettings
+      with PluginPaths
 
   override lazy val projectSettings = super.projectSettings ++ dockerSettings
 }

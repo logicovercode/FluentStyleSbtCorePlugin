@@ -1,7 +1,7 @@
 package org.logicovercode.bsbt.docker
 
 object DockerUtils {
-  def pid() :  Long = {
+  def pid(): Long = {
 
     import java.lang.management.ManagementFactory
     val bean = ManagementFactory.getRuntimeMXBean

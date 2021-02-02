@@ -4,8 +4,9 @@ import org.logicovercode.bsbt.docker.{DockerSettings, IDockerContainer}
 import sbt.Keys._
 import sbt._
 
-
-case class ModuleBuild private(private val allSettings: Set[Def.Setting[_]]) extends BuildModuleSettings[ModuleBuild] with DockerSettings {
+case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]])
+    extends BuildModuleSettings[ModuleBuild]
+    with DockerSettings {
 
   def sbtOffLineMode(sbtOffLineMode: Boolean): ModuleBuild = {
     val _settings = Set(
@@ -15,62 +16,87 @@ case class ModuleBuild private(private val allSettings: Set[Def.Setting[_]]) ext
   }
 
   @Deprecated
-  override def moduleSourceDirectories(projectSourceDirectories: String*): ModuleBuild = sourceDirectories(projectSourceDirectories : _*)
+  override def moduleSourceDirectories(
+      projectSourceDirectories: String*
+  ): ModuleBuild = sourceDirectories(projectSourceDirectories: _*)
 
   def sourceDirectories(projectSourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedSourceDirectories in Compile ++= projectSourceDirectories.map { src => (baseDirectory in Compile).value / src }
+      unmanagedSourceDirectories in Compile ++= projectSourceDirectories.map {
+        src => (baseDirectory in Compile).value / src
+      }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
   @Deprecated
-  override def moduleResourceDirectories(projectResourceDirectories: String*): ModuleBuild = resourceDirectories(projectResourceDirectories : _*)
+  override def moduleResourceDirectories(
+      projectResourceDirectories: String*
+  ): ModuleBuild = resourceDirectories(projectResourceDirectories: _*)
   def resourceDirectories(projectResourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedResourceDirectories in Compile ++= projectResourceDirectories.map { res => (baseDirectory in Compile).value / res }
+      unmanagedResourceDirectories in Compile ++= projectResourceDirectories
+        .map { res => (baseDirectory in Compile).value / res }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
   def testSourceDirectories(testSourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedSourceDirectories in Test ++= testSourceDirectories.map { src => (baseDirectory in Test).value / src }
+      unmanagedSourceDirectories in Test ++= testSourceDirectories.map { src =>
+        (baseDirectory in Test).value / src
+      }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
   def testResourceDirectories(testResourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedResourceDirectories in Test ++= testResourceDirectories.map { res => (baseDirectory in Test).value / res }
+      unmanagedResourceDirectories in Test ++= testResourceDirectories.map {
+        res => (baseDirectory in Test).value / res
+      }
     )
     ModuleBuild(this.allSettings ++ _settings)
   }
 
   def sbtPlugins(sbtPlugins: ModuleID*): ModuleBuild = {
     val sbtPluginsSet: Set[sbt.ModuleID] = sbtPlugins.toSet
-    val moduleIdSettings: Set[Def.Setting[_]] = sbtPluginsSet.map(mID => addSbtPlugin(mID))
+    val moduleIdSettings: Set[Def.Setting[_]] =
+      sbtPluginsSet.map(mID => addSbtPlugin(mID))
     ModuleBuild(this.allSettings ++ moduleIdSettings)
   }
 
   @Deprecated
-  override def moduleDependencies(projectDependencies: Seq[JvmModuleID]*): ModuleBuild = dependencies(projectDependencies : _*)
+  override def moduleDependencies(
+      projectDependencies: Seq[JvmModuleID]*
+  ): ModuleBuild = dependencies(projectDependencies: _*)
 
-  def dependencies(projectDependencies: Seq[JvmModuleID]*) : ModuleBuild = {
+  def dependencies(projectDependencies: Seq[JvmModuleID]*): ModuleBuild = {
     val jvmModuleIdSet = projectDependencies.flatten.toSet
-    ModuleBuild(this.allSettings ++ moduleIdSettings(jvmModuleIdSet.map(_.moduleID)) ++ resolverSettingsSet(jvmModuleIdSet) ++ allSettings)
+    ModuleBuild(
+      this.allSettings ++ moduleIdSettings(
+        jvmModuleIdSet.map(_.moduleID)
+      ) ++ resolverSettingsSet(jvmModuleIdSet) ++ allSettings
+    )
   }
 
-  def testDependencies(projectDependencies: Seq[JvmModuleID]*) : ModuleBuild = {
+  def testDependencies(projectDependencies: Seq[JvmModuleID]*): ModuleBuild = {
     val jvmModuleIdSet = projectDependencies.flatten.toSet
-    val (scopedJvmModuleIds, unscopedJvmModuleIds) = jvmModuleIdSet.partition( jvmID => jvmID.moduleID.configurations.isDefined )
-    val effectiveModuleIds = scopedJvmModuleIds.map(_.moduleID) ++ unscopedJvmModuleIds.map(jvmModuleID => jvmModuleID.moduleID % Test)
-    ModuleBuild(this.allSettings ++ moduleIdSettings(effectiveModuleIds) ++ resolverSettingsSet(jvmModuleIdSet))
+    val (scopedJvmModuleIds, unscopedJvmModuleIds) =
+      jvmModuleIdSet.partition(jvmID => jvmID.moduleID.configurations.isDefined)
+    val effectiveModuleIds = scopedJvmModuleIds.map(
+      _.moduleID
+    ) ++ unscopedJvmModuleIds.map(jvmModuleID => jvmModuleID.moduleID % Test)
+    ModuleBuild(
+      this.allSettings ++ moduleIdSettings(
+        effectiveModuleIds
+      ) ++ resolverSettingsSet(jvmModuleIdSet)
+    )
   }
 
   def dockerContainers(dockerContainers: IDockerContainer*): ModuleBuild = {
     //this will remove duplicates
-    val dockerInstancesSet = ( dockerContainers map (_.instance()) ).toSet
+    val dockerInstancesSet = (dockerContainers map (_.instance())).toSet
     val settings: Seq[Def.Setting[_]] = Seq(
       dependentDockerContainers := dockerInstancesSet
     )
@@ -79,20 +105,28 @@ case class ModuleBuild private(private val allSettings: Set[Def.Setting[_]]) ext
 
     val allSettings = this.settings ++ settings ++ containerSettings
 
-    ModuleBuild( allSettings.toSet )
+    ModuleBuild(allSettings.toSet)
   }
 
-  private def resolverSettingsSet(dependencies: Set[JvmModuleID]): Set[Def.Setting[_]] = {
-    val dependencyResolvers = dependencies.map(dep => dep.resolverForThisModuleId).flatten
+  private def resolverSettingsSet(
+      dependencies: Set[JvmModuleID]
+  ): Set[Def.Setting[_]] = {
+    val dependencyResolvers =
+      dependencies.map(dep => dep.resolverForThisModuleId).flatten
     Set(resolvers ++= dependencyResolvers.toSeq)
   }
 
-  private def moduleIdSettings(dependencies: Set[ModuleID]): Set[Def.Setting[_]] = {
+  private def moduleIdSettings(
+      dependencies: Set[ModuleID]
+  ): Set[Def.Setting[_]] = {
     Set(libraryDependencies ++= dependencies.toSeq)
   }
 
   def settings: Seq[Def.Setting[_]] = {
-    this.allSettings.toSeq
+    this.allSettings.toSeq ++ Set(
+      publishLocalConfiguration := publishLocalConfiguration.value
+        .withOverwrite(true)
+    )
   }
 
   override def moduleScalaVersion(moduleScalaVersion: String): ModuleBuild = {
@@ -103,9 +137,14 @@ case class ModuleBuild private(private val allSettings: Set[Def.Setting[_]]) ext
 
 object ModuleBuild {
 
-  def apply(projectOrganization: String, projectArtifact: String, mavenVersion: String): ModuleBuild = {
+  def apply(
+      projectOrganization: String,
+      projectArtifact: String,
+      mavenVersion: String
+  ): ModuleBuild = {
     //user shouldn't be forced to set this variable
-    val sbtOfflineMode = sys.env.get("SBT_OFFLINE_MODE").getOrElse("false").toBoolean
+    val sbtOfflineMode =
+      sys.env.get("SBT_OFFLINE_MODE").getOrElse("false").toBoolean
 
     val defaultSettings: Set[Def.Setting[_]] = Set(
       name := projectArtifact,

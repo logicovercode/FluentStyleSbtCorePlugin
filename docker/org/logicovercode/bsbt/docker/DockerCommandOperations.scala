@@ -2,7 +2,7 @@ package org.logicovercode.bsbt.docker
 
 trait DockerCommandOperations {
 
-  final def imageName(organization: String, name : String) : String = {
+  final def imageName(organization: String, name: String): String = {
     val arr = (organization).split("[.]")
     println(arr.mkString("::"))
     val org = if (arr.length > 1) arr(1) else organization
@@ -10,7 +10,11 @@ trait DockerCommandOperations {
     image
   }
 
-  def buildDockerImageWithLatestTag(executionDir : String, dockerFile : String, imageName : String) : Unit = {
+  def buildDockerImageWithLatestTag(
+      executionDir: String,
+      dockerFile: String,
+      imageName: String
+  ): Unit = {
     import sys.process._
 
     val buildCommand = s"docker build -t ${imageName} $executionDir"
@@ -19,7 +23,10 @@ trait DockerCommandOperations {
     buildCommand !
   }
 
-  def tagLatestDockerImageWithVersionTag(imageName : String, tag : String) : Unit = {
+  def tagLatestDockerImageWithVersionTag(
+      imageName: String,
+      tag: String
+  ): Unit = {
     import sys.process._
 
     val latestTag = s"$imageName:latest"
@@ -29,7 +36,7 @@ trait DockerCommandOperations {
     tagCommand !
   }
 
-  def publishDockerImage(tag : String) : Unit = {
+  def publishDockerImage(tag: String): Unit = {
     import sys.process._
 
     println(s"now publishing docker image >$tag<")
@@ -38,14 +45,14 @@ trait DockerCommandOperations {
     dockerPushCommand !
   }
 
-  def parseDockerCommandArgs(args : Seq[String]) : (String, String) = {
+  def parseDockerCommandArgs(args: Seq[String]): (String, String) = {
 
     val tuples = args.map { arg =>
       val params = arg.split("=")
       params match {
-        case Array("dir", dirValue) => ("dir" -> dirValue)
+        case Array("dir", dirValue)  => ("dir" -> dirValue)
         case Array("file", dirValue) => ("file" -> dirValue)
-        case _ => ("", "")
+        case _                       => ("", "")
       }
     }
 

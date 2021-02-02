@@ -6,10 +6,13 @@ import sbt.{Def, _}
 
 trait DockerSettings extends DockerCommandOperations {
 
-  lazy val dependentDockerContainers = settingKey[Set[DockerContainer]]("set of dependent docker containers")
+  lazy val dependentDockerContainers =
+    settingKey[Set[DockerContainer]]("set of dependent docker containers")
   lazy val startServices = taskKey[Unit]("start dependent containers")
-  lazy val buildImage = inputKey[Unit]("build docker image on local with latest tag")
-  lazy val tagImageForGitHub = taskKey[Unit]("tag latest docker image to push on github")
+  lazy val buildImage =
+    inputKey[Unit]("build docker image on local with latest tag")
+  lazy val tagImageForGitHub =
+    taskKey[Unit]("tag latest docker image to push on github")
   lazy val publishImageToGitHub = taskKey[Unit]("publish image to github")
 
   lazy val dockerSettings = Seq[Def.Setting[_]](
@@ -26,18 +29,16 @@ trait DockerSettings extends DockerCommandOperations {
       val sbtProcessId = DockerUtils.pid()
       DockerManagerKiller.killDockerManager(sbtProcessId, osName)
     },
-
     buildImage := {
       import complete.DefaultParsers._
       val args = spaceDelimited("").parsed
-      val _@(executionDir, dockerFile) = parseDockerCommandArgs(args)
+      val _ @(executionDir, dockerFile) = parseDockerCommandArgs(args)
       val dockerImageName = imageName(organization.value, name.value)
       buildDockerImageWithLatestTag(executionDir, dockerFile, dockerImageName)
 
       val tag = s"$dockerImageName:${version.value}"
       tagLatestDockerImageWithVersionTag(dockerImageName, tag)
     },
-
     tagImageForGitHub := {
       val gitUser = sys.env.get("REPO_GITHUB_USER")
 
@@ -51,7 +52,6 @@ trait DockerSettings extends DockerCommandOperations {
           println(s"environment variable [GIT_USER] is not set")
       }
     },
-
     publishImageToGitHub := {
 
       val gitUser = sys.env.get("REPO_GITHUB_USER")

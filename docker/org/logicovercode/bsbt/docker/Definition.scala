@@ -7,23 +7,28 @@ import com.whisk.docker.{DockerContainer, DockerFactory, DockerKit}
 import org.slf4j.LoggerFactory
 import sbt.Def
 
-trait IDockerContainer{
-  def instance() : DockerContainer
-  def settings() : Set[Def.Setting[_]]
+trait IDockerContainer {
+  def instance(): DockerContainer
+  def settings(): Set[Def.Setting[_]]
 }
 
 class DockerDependentServices(_dockerContainers: Set[DockerContainer])
-  extends DockerKit {
+    extends DockerKit {
 
-  import scala.concurrent.duration._  
+  import scala.concurrent.duration._
 
   override val StartContainersTimeout = 2.minutes
 
-  override def dockerContainers: List[DockerContainer] = _dockerContainers.toList
+  override def dockerContainers: List[DockerContainer] =
+    _dockerContainers.toList
 
   private lazy val log = LoggerFactory.getLogger(this.getClass)
 
-  override implicit val dockerFactory: DockerFactory = new DockerJavaExecutorFactory(
-    new Docker(DefaultDockerClientConfig.createDefaultConfigBuilder().build(),
-      factory = new NettyDockerCmdExecFactory()))
+  override implicit val dockerFactory: DockerFactory =
+    new DockerJavaExecutorFactory(
+      new Docker(
+        DefaultDockerClientConfig.createDefaultConfigBuilder().build(),
+        factory = new NettyDockerCmdExecFactory()
+      )
+    )
 }

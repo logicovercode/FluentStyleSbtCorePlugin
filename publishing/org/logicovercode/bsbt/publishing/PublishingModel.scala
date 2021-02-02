@@ -6,12 +6,18 @@ import java.net.URL
 
 trait PublishingModel {
 
-  case class GithubRepo private(private val githubUser : String, private val githubRepoName : String){
+  case class GithubRepo private (
+      private val githubUser: String,
+      private val githubRepoName: String
+  ) {
 
-    def homePageUrl() = new URL(s"https://github.com/$githubUser/$githubRepoName")
-    private def sourceCodeBrowserUrl = s"https://github.com/$githubUser/$githubRepoName"
+    def homePageUrl() = new URL(
+      s"https://github.com/$githubUser/$githubRepoName"
+    )
+    private def sourceCodeBrowserUrl =
+      s"https://github.com/$githubUser/$githubRepoName"
     private def sourceCodeScmUrl = s"git@github.com:$githubUser/$githubRepoName"
-    def scmInfo(devConnection: Option[String] = None) : ScmInfo = {
+    def scmInfo(devConnection: Option[String] = None): ScmInfo = {
       ScmInfo(new URL(sourceCodeBrowserUrl), sourceCodeScmUrl, devConnection)
     }
   }

@@ -3,7 +3,7 @@ package org.logicovercode.bsbt.docker
 import org.scalatest.flatspec.AsyncFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
-class DockerCommandParserSpec extends AsyncFlatSpecLike with Matchers{
+class DockerCommandParserSpec extends AsyncFlatSpecLike with Matchers {
 
   val dataset1 = {
     val input = List[String]()
@@ -41,16 +41,15 @@ class DockerCommandParserSpec extends AsyncFlatSpecLike with Matchers{
     (input, output)
   }
 
-  val data = Set( dataset1, dataset2, dataset3, dataset4, dataset5, dataset6 )
+  val data = Set(dataset1, dataset2, dataset3, dataset4, dataset5, dataset6)
 
   private val dockerCommandOperations = new DockerCommandOperations {}
 
   import dockerCommandOperations._
 
   data foreach { case (input, output) =>
-
-    it should s"return $output for $input" in{
-      parseDockerCommandArgs( input ) should be(output)
+    it should s"return $output for $input" in {
+      parseDockerCommandArgs(input) should be(output)
     }
   }
 }
