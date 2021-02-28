@@ -32,9 +32,9 @@ trait DockerSettings extends DockerCommandOperations {
     buildImage := {
       import complete.DefaultParsers._
       val args = spaceDelimited("").parsed
-      val _ @(executionDir, dockerFile) = parseDockerCommandArgs(args)
+      val _ @(executionDir, dockerArgs, dockerFile) = parseDockerCommandArgs(args)
       val dockerImageName = imageName(organization.value, name.value)
-      buildDockerImageWithLatestTag(executionDir, dockerFile, dockerImageName)
+      buildDockerImageWithLatestTag(executionDir, dockerArgs, dockerFile, dockerImageName)
 
       val tag = s"$dockerImageName:${version.value}"
       tagLatestDockerImageWithVersionTag(dockerImageName, tag)
