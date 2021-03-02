@@ -10,13 +10,16 @@ libraryDependencies ++= Seq(
   "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9"
 )
 
+// https://mvnrepository.com/artifact/com.github.pathikrit/better-files
+libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.9.1"
+
 val testDirs = List( /*"core-spec"*/ "docker-spec")
 unmanagedSourceDirectories in Test ++= testDirs.map(dir =>
   (baseDirectory in Test).value / dir
 )
 
-val prjctTestDirs = List("core", "plugin", "publishing", "docker", "paths")
-unmanagedSourceDirectories in Compile ++= prjctTestDirs.map(dir =>
+val projectSourceDirs = List("core", "plugin", "publishing", "docker", "paths", "scalafmt")
+unmanagedSourceDirectories in Compile ++= projectSourceDirs.map(dir =>
   (baseDirectory in Compile).value / dir
 )
 

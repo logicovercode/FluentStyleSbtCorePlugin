@@ -4,9 +4,7 @@ import org.logicovercode.bsbt.docker.{DockerSettings, IDockerContainer}
 import sbt.Keys._
 import sbt._
 
-case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]])
-    extends BuildModuleSettings[ModuleBuild]
-    with DockerSettings {
+case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]]) extends BuildModuleSettings[ModuleBuild] with DockerSettings {
 
   def sbtOffLineMode(sbtOffLineMode: Boolean): ModuleBuild = {
     val _settings = Set(
@@ -22,8 +20,8 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]])
 
   def sourceDirectories(projectSourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedSourceDirectories in Compile ++= projectSourceDirectories.map {
-        src => (baseDirectory in Compile).value / src
+      unmanagedSourceDirectories in Compile ++= projectSourceDirectories.map { src =>
+        (baseDirectory in Compile).value / src
       }
     )
     ModuleBuild(this.allSettings ++ _settings)
@@ -52,8 +50,8 @@ case class ModuleBuild private (private val allSettings: Set[Def.Setting[_]])
 
   def testResourceDirectories(testResourceDirectories: String*): ModuleBuild = {
     val _settings = Set(
-      unmanagedResourceDirectories in Test ++= testResourceDirectories.map {
-        res => (baseDirectory in Test).value / res
+      unmanagedResourceDirectories in Test ++= testResourceDirectories.map { res =>
+        (baseDirectory in Test).value / res
       }
     )
     ModuleBuild(this.allSettings ++ _settings)

@@ -1,13 +1,6 @@
 package org.logicovercode.bsbt.core.model
 
-import sbt.{
-  ClasspathDep,
-  ModuleID,
-  ProjectRef,
-  ProjectReference,
-  classpathDependency,
-  uri
-}
+import sbt.{ClasspathDep, ModuleID, ProjectRef, ProjectReference, classpathDependency, uri}
 
 case class SbtModule private[SbtModule] (
     moduleID: ModuleID,

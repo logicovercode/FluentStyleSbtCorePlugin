@@ -12,8 +12,7 @@ trait IDockerContainer {
   def settings(): Set[Def.Setting[_]]
 }
 
-class DockerDependentServices(_dockerContainers: Set[DockerContainer])
-    extends DockerKit {
+class DockerDependentServices(_dockerContainers: Set[DockerContainer]) extends DockerKit {
 
   import scala.concurrent.duration._
 

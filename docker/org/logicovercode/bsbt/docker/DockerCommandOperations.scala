@@ -12,7 +12,7 @@ trait DockerCommandOperations {
 
   def buildDockerImageWithLatestTag(
       executionDir: String,
-      dockerArgs : String,
+      dockerArgs: String,
       dockerFile: String,
       imageName: String
   ): Unit = {
@@ -51,11 +51,11 @@ trait DockerCommandOperations {
     println("all args")
     args.foreach(println)
 
-    val argsParamString = (for{
+    val argsParamString = (for {
       argParam <- args.filter(arg => !arg.startsWith("dir") && !arg.startsWith("file"))
       argParamValue = argParam.replace("args=", "")
       argParamWithoutQuote = argParamValue.replace("\"", "")
-    } yield  argParamWithoutQuote).mkString(" ")
+    } yield argParamWithoutQuote).mkString(" ")
 
     println(s"arg param string >$argsParamString<")
 
@@ -68,13 +68,12 @@ trait DockerCommandOperations {
       }
     }
 
-    val map = (tuples :+ ("args" -> argsParamString) ).filter(!_._1.trim.isEmpty).toMap
-
+    val map = (tuples :+ ("args" -> argsParamString)).filter(!_._1.trim.isEmpty).toMap
 
     val dockerArgs = map.get("args").getOrElse("")
     val dockerArgsWithBuildArg = dockerArgs.isEmpty match {
       case true  => ""
-      case false => dockerArgs.split(" ").map("--build-arg " + _ ).map(_.trim).mkString(" ")
+      case false => dockerArgs.split(" ").map("--build-arg " + _).map(_.trim).mkString(" ")
     }
 
     val dirArgs = map.get("dir").getOrElse(".")
