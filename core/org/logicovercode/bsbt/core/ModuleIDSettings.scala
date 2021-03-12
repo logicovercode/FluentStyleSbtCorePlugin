@@ -5,18 +5,12 @@ import sbt.librarymanagement.{Configuration, MavenRepository, ModuleID}
 
 trait ModuleIDSettings {
 
-  implicit def moduleIdToSeqJvmModuleID(
-      moduleID: ModuleID
-  ): Seq[JvmModuleID] = {
-    val jvmModuleID = JvmModuleID(moduleID)
-    Seq(jvmModuleID)
-  }
+  implicit def moduleIdToSeqJvmModuleID(moduleID: ModuleID): Seq[JvmModuleID] = Seq(JvmModuleID(moduleID))
 
-  implicit def jvmModuleIdToSeqJvmModuleID(
-      jvmModuleID: JvmModuleID
-  ): Seq[JvmModuleID] = {
-    Seq(jvmModuleID)
-  }
+  implicit def seqOfModuleIdToSeqJvmModuleID(moduleIDSeq: Seq[ModuleID]): Seq[JvmModuleID] = moduleIDSeq.map( JvmModuleID(_) )
+
+
+  implicit def jvmModuleIdToSeqJvmModuleID(jvmModuleID: JvmModuleID): Seq[JvmModuleID] = Seq(jvmModuleID)
 
   implicit class ModuleIdExtension(moduleID: ModuleID) {
 
